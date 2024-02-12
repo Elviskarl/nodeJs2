@@ -4,6 +4,7 @@ const taskRouter = require('./Routes/tasks');
 const {connectToDb} =require('./db/connect');
 require('dotenv').config();
 const notFound = require('./middle-ware/notFound');
+const errorHandler = require('./middle-ware/error-handler');
 
 
 // Middle-ware
@@ -12,8 +13,9 @@ app.use(express.json());
 // Routes
 app.use('/api/v1/tasks',taskRouter);
 app.use(notFound);
+app.use(errorHandler);
 // Port
-const port = 3000;
+const port = process.env.PORT ||  3000;
 // Static/Public files
 
 async function start() {

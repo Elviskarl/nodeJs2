@@ -1,12 +1,15 @@
 const taskModel = require('../Model/Tasks');
 const asyncWrapper = require('../middle-ware/async');
 
-async function getAllTasks(req,res){
+async function getAllTasks(req,res,next){
     const task = await taskModel.find({});
     if(task){
       return res.status(200).json({task});     
     }       
-    return res.status(404).json({message: `There are no Tasks at the moment.`});
+    const error = new Error('Something went wrong.....\nThere are no Tasks at the moment.');
+    error.status = 404;
+    return next(error);
+    // return res.status(404).json({message: `There are no Tasks at the moment.`});
   // }catch(err){
   //   res.status(500).json({
   //     ['ERROR-Name']: err.name,
@@ -14,13 +17,17 @@ async function getAllTasks(req,res){
   //   })
   // }
 }
-async function getTasks(req,res){
+async function getTasks(req,res,next){
     const {id: taskId} = req.params;
     const task = await taskModel.findOne({_id: taskId});
     if(task){
       return res.status(200).json({task});
     }
-    return res.status(404).json({message: `There is no task with id: ${taskId}.`});
+    const error = new Error(`Something went wrong.....
+      There is no task with id: ${taskId}.`);
+    error.status = 404;
+    return next(error);
+    // return res.status(404).json({message: `There is no task with id: ${taskId}.`});
 }
 
 async function createTask(req,res){
